@@ -66,17 +66,20 @@ std_incong_s2 = squeeze(std(global_incong_s2));
 ```
 
 ```matlab
-function p = plotResponse(x, y, yerr, col, text)
+function p = plotResponse(x, y, yerr, col, text, dname)
 
     gray = [.7 .7 .7];
     y_ticks = [-5 * 10^-12, -2.5 * 10^-12, 0, 2.5 * 10^-12, 5 * 10^-12];
     y_lims = y_ticks([1, end]);
+    
+    if ~isnan(yerr)
+        errorbar(x, y, yerr, "Color", gray, "CapSize", 0)
+    end
 
-    errorbar(x, y, yerr, "Color", gray, "LineWidth", 0.1, "MarkerSize", 0.1, "CapSize", 0)
     hold on
     
-    plot(x, y, col)
-    xline(0, "--k")
+    plot(x, y, col, "LineWidth", 2, "DisplayName", dname)
+    xline(0, "--k", "HandleVisibility", "off")
     
     ylim(y_lims)
     yticks(y_ticks)
@@ -94,16 +97,46 @@ end
 figure;
 
 subplot(2, 2, 1)
-plotResponse(time_points, mean_cong_s1, std_cong_s1, "b", "S1, CW")
+plotResponse(time_points, mean_cong_s1, std_cong_s1, "b", "S1, CW", "")
 
 subplot(2, 2, 2)
-plotResponse(time_points, mean_cong_s2, std_cong_s2, "b", "S2, CW")
+plotResponse(time_points, mean_cong_s2, std_cong_s2, "b", "S2, CW", "")
 
 subplot(2, 2, 3)
-plotResponse(time_points, mean_incong_s1, std_incong_s1, "r", "S1, IW")
+plotResponse(time_points, mean_incong_s1, std_incong_s1, "r", "S1, IW", "")
 
 subplot(2, 2, 4)
-plotResponse(time_points, mean_incong_s2, std_incong_s2, "r", "S2, IW")
+plotResponse(time_points, mean_incong_s2, std_incong_s2, "r", "S2, IW", "")
 ```
 
 ![figure_0.png](evoked_fields_media/figure_0.png)
+
+
+```matlab
+y_ticks = [-2 * 10^-12, -1 * 10^-12, 0, 1 * 10^-12, 2 * 10^-12];
+y_lims = y_ticks([1, end]);
+
+figure;
+
+subplot(2, 1, 1)
+
+plotResponse(time_points, mean_cong_s1, nan, "b", "", "CW")
+plotResponse(time_points, mean_incong_s1, nan, "r", "S1", "IW")
+
+ylim(y_lims)
+yticks(y_ticks)
+legend("show")
+
+subplot(2, 1, 2)
+
+plotResponse(time_points, mean_cong_s2, nan, "b", "", "CW")
+plotResponse(time_points, mean_incong_s2, nan, "r", "S2", "IW")
+
+ylim(y_lims)
+yticks(y_ticks)
+legend("show")
+```
+
+![figure_1.png](evoked_fields_media/figure_1.png)
+
+
